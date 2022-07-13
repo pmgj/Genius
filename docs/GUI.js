@@ -1,74 +1,74 @@
 import Type from './Type.js';
 import Genius from './Genius.js';
 
-function GUI() {
-    let game;
-    let colors = [];
-    let sounds = [new Audio("beep0.mp3"), new Audio("beep1.mp3"), new Audio("beep2.mp3"), new Audio("beep3.mp3"), new Audio("end.mp3")];
-    let colorsLeft = 0;
-    let botoes = document.querySelectorAll("#colors div");
-    function showColor(index) {
-        let input = botoes[index];
-        input.style.backgroundColor = "black";
-        setTimeout(repintarCor, 250, index);
-        sounds[index].play();
+class GUI {
+    constructor() {
+        this.colors = [];
+        this.sounds = [new Audio("beep0.mp3"), new Audio("beep1.mp3"), new Audio("beep2.mp3"), new Audio("beep3.mp3"), new Audio("end.mp3")];
+        this.buttons = document.querySelectorAll("#colors div");
+        this.game = null;
     }
-    function repintarCor(index) {
-        let input = botoes[index];
-        input.style.backgroundColor = colors[index];
+    setMessage(selector, msg) {
+        let message = document.querySelector(selector);
+        message.textContent = msg;
     }
-    function blockInput() {
-        botoes.forEach(b => b.onclick = undefined);
-    }
-    function unblockInput() {
-        botoes.forEach(b => b.onclick = check);
-    }
-    function showSequence(vetor) {
-        colorsLeft = vetor.length;
-        setMessage("#round", colorsLeft);
-        setMessage("#correct", 0);
-        blockInput();
-        for (let j = 0; j < vetor.length; j++) {
-            setTimeout(showColor, (j + 1) * 1000, vetor[j]);
-        }
-        setTimeout(unblockInput, colorsLeft * 1000);
-    }
-    function play(evt) {
-        game = new Genius();
-        setMessage("#message", "");
-        showSequence(game.getColors());
-        evt.preventDefault();
-    }
-    function check() {
-        let indice = colors.indexOf(this.id);
-        showColor(indice);
-        game.checkColor(indice);
-        switch (game.getType()) {
+    async check(evt) {
+        let color = this.colors.indexOf(evt.target.id);
+        let promise = new Promise(resolve => this.paintColor(resolve, color));
+        await promise;
+        this.game.checkColor(color);
+        switch (this.game.getType()) {
             case Type.WRONG_COLOR:
-                sounds[4].play();
-                setMessage("#message", "Game over!");
-                blockInput();
+                this.setMessage("#message", "You lose!");
+                this.sounds[4].play();
+                this.blockButtons();
                 break;
             case Type.NEW_COLOR:
-                showSequence(game.getColors());
+                this.paintSequence(this.game.getColors());
                 break;
             case Type.CORRECT_COLOR:
-                setMessage("#correct", game.getIndex());
+                this.setMessage("#correct", this.game.getIndex());
         }
     }
-    function setMessage(selector, value) {
-        let rodada = document.querySelector(selector);
-        rodada.textContent = value;
+    paintColor(resolve, index) {
+        this.sounds[index].play();
+        let input = this.buttons[index];
+        input.style.animationName = `${input.id}-animation`;
+        input.onanimationend = () => {
+            input.style.animationName = "";
+            setTimeout(() => resolve(true), 1000);
+        };
     }
-    function init() {
+    async paintSequence(array) {
+        this.blockButtons();
+        this.setMessage("#round", array.length);
+        this.setMessage("#correct", 0);
+        for (let i = 0; i < array.length; i++) {
+            let promise = new Promise(resolve => this.paintColor(resolve, array[i]));
+            await promise;
+        }
+        this.unblockButtons();
+    }
+    blockButtons() {
+        this.buttons.forEach(i => i.onclick = undefined);
+    }
+    unblockButtons() {
+        this.buttons.forEach(i => i.onclick = this.check.bind(this));
+    }
+    play(evt) {
+        evt.preventDefault();
+        this.setMessage("#message", "");
+        this.game = new Genius();
+        this.paintSequence(this.game.getColors());
+    }
+    init() {
         let form = document.forms[0];
-        form.onsubmit = play;
-        botoes.forEach(b => {
-            b.onclick = check;
-            colors.push(b.id);
+        form.onsubmit = this.play.bind(this);
+        this.buttons.forEach(b => {
+            b.onclick = this.check.bind(this);
+            this.colors.push(b.id);
         });
     }
-    return { init };
 }
 let gui = new GUI();
 gui.init();

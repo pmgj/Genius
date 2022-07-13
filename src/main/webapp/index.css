@@ -1,0 +1,84 @@
+body {
+  font-family: Tahoma, san-serif;
+}
+
+#colors div {
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+  border-radius: 25px;
+  display: inline-block;
+  /*transition-property: background-color;*/
+  animation-duration: 0.25s;
+  animation-fill-mode: backwards;
+}
+
+#green {
+  background-color: green;
+}
+
+#blue {
+  background-color: blue;
+}
+
+#red {
+  background-color: red;
+}
+
+#yellow {
+  background-color: yellow;
+}
+
+@keyframes green-animation {
+  from {
+    background-color: green;
+  }
+
+  to {
+    background-color: black;
+  }
+}
+
+@keyframes blue-animation {
+  from {
+    background-color: blue;
+  }
+
+  to {
+    background-color: black;
+  }
+}
+
+@keyframes red-animation {
+  from {
+    background-color: red;
+  }
+
+  to {
+    background-color: black;
+  }
+}
+
+@keyframes yellow-animation {
+  from {
+    background-color: yellow;
+  }
+
+  to {
+    background-color: black;
+  }
+}
+
+input[type="submit"] {
+  margin-top: 10px;
+}
+
+#colors {
+  width: 230px;
+  margin: 0 auto;
+}
+
+form,
+h1 {
+  text-align: center;
+}

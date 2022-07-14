@@ -68,7 +68,7 @@ body {
     }
 }
 
-input[type="submit"] {
+input[type="button"] {
     margin-top: 10px;
 }
 
@@ -77,7 +77,10 @@ input[type="submit"] {
     margin: 0 auto;
 }
 
-form,
-h1 {
+h1, #colors {
     text-align: center;
+}
+
+p {
+    text-align: left;
 }

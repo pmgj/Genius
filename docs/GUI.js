@@ -64,8 +64,8 @@ class GUI {
         this.paintSequence(this.game.getColors());
     }
     init() {
-        let form = document.forms[0];
-        form.onsubmit = this.play.bind(this);
+        let button = document.querySelector("input[type='button']");
+        button.onclick = this.play.bind(this);
         this.buttons.forEach(b => {
             b.onclick = this.check.bind(this);
             this.colors.push(b.id);

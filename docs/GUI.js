@@ -14,9 +14,9 @@ class GUI {
     }
     async check(evt) {
         let color = this.colors.indexOf(evt.target.id);
-        let promise = new Promise(resolve => this.paintColor(resolve, color));
-        await promise;
         this.game.checkColor(color);
+        this.setMessage("#correct", this.game.getIndex());
+        new Promise(resolve => this.paintColor(resolve, color));
         switch (this.game.getType()) {
             case Type.WRONG_COLOR:
                 this.setMessage("#message", "You lose!");
@@ -27,7 +27,7 @@ class GUI {
                 this.paintSequence(this.game.getColors());
                 break;
             case Type.CORRECT_COLOR:
-                this.setMessage("#correct", this.game.getIndex());
+                break;
         }
     }
     paintColor(resolve, index) {
@@ -36,18 +36,20 @@ class GUI {
         input.style.animationName = `${input.id}-animation`;
         input.onanimationend = () => {
             input.style.animationName = "";
-            setTimeout(() => resolve(true), 1000);
+            setTimeout(() => resolve(true), 500);
         };
     }
-    async paintSequence(array) {
+    async innerPaint(array) {
         this.blockButtons();
         this.setMessage("#round", array.length);
         this.setMessage("#correct", 0);
         for (let i = 0; i < array.length; i++) {
-            let promise = new Promise(resolve => this.paintColor(resolve, array[i]));
-            await promise;
+            await new Promise(resolve => this.paintColor(resolve, array[i]));
         }
         this.unblockButtons();
+    }
+    paintSequence(array) {
+        setTimeout(this.innerPaint.bind(this), 1000, array);
     }
     blockButtons() {
         this.buttons.forEach(i => i.onclick = undefined);

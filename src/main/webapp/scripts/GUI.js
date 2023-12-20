@@ -1,10 +1,13 @@
+import Type from "./Type.js";
+import Type2 from "./Type2.js";
+
 class GUI {
     constructor() {
         this.xhr = new XMLHttpRequest();
         this.colors = [];
-        this.sounds = [new Audio("beep0.mp3"), new Audio("beep1.mp3"), new Audio("beep2.mp3"), new Audio("beep3.mp3"), new Audio("end.mp3")];
+        this.sounds = [new Audio("audios/beep0.mp3"), new Audio("audios/beep1.mp3"), new Audio("audios/beep2.mp3"), new Audio("audios/beep3.mp3"), new Audio("audios/end.mp3")];
         this.buttons = document.querySelectorAll("#colors div");
-        this.type = "REST";
+        this.type = Type.REST;
     }
     setMessage(selector, msg) {
         let message = document.querySelector(selector);
@@ -17,19 +20,19 @@ class GUI {
         this.xhr.onload = () => {
             let obj = JSON.parse(this.xhr.responseText);
             switch (obj.type) {
-                case "WRONG_COLOR":
+                case Type2.WRONG_COLOR:
                     this.setMessage("#message", "You lose!");
                     this.sounds[4].play();
                     this.blockButtons();
                     break;
-                case "NEW_COLOR":
+                case Type2.NEW_COLOR:
                     this.paintSequence(obj.colors);
                     break;
-                case "CORRECT_COLOR":
+                case Type2.CORRECT_COLOR:
                     this.setMessage("#correct", obj.index);
             }
         };
-        if (this.type == "Servlet") {
+        if (this.type == Type.SERVLET) {
             let formData = new FormData();
             formData.append("color", color);
             this.xhr.open("put", "ServletGenius");
@@ -37,7 +40,7 @@ class GUI {
         } else {
             this.xhr.open("put", "webresources/genius");
             this.xhr.setRequestHeader("Content-Type", "application/json");
-            this.xhr.send(JSON.stringify({color: color}));
+            this.xhr.send(JSON.stringify({ color: color }));
         }
     }
     paintColor(resolve, index) {
@@ -72,12 +75,8 @@ class GUI {
             let obj = JSON.parse(this.xhr.responseText);
             this.paintSequence(obj.colors);
         };
-        if (this.type == "Servlet") {
-            this.xhr.open("post", "ServletGenius");
-        } else {
-            this.xhr.open("post", "webresources/genius");
-        }
-        this.xhr.send(null);
+        this.xhr.open("post", this.type === Type.SERVLET ? "ServletGenius" : "webresources/genius");
+        this.xhr.send();
     }
     init() {
         let form = document.forms[0];

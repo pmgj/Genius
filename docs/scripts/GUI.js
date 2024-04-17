@@ -4,7 +4,6 @@ import Genius from './Genius.js';
 class GUI {
     constructor() {
         this.colors = [];
-        this.sounds = [new Audio("beep0.mp3"), new Audio("beep1.mp3"), new Audio("beep2.mp3"), new Audio("beep3.mp3"), new Audio("end.mp3")];
         this.buttons = document.querySelectorAll("#colors div");
         this.game = null;
     }
@@ -20,7 +19,6 @@ class GUI {
         switch (this.game.getType()) {
             case Type.WRONG_COLOR:
                 this.setMessage("#message", "You lose!");
-                this.sounds[4].play();
                 this.blockButtons();
                 break;
             case Type.NEW_COLOR:
@@ -31,9 +29,8 @@ class GUI {
         }
     }
     paintColor(resolve, index) {
-        this.sounds[index].play();
         let input = this.buttons[index];
-        input.style.animationName = `${input.id}-animation`;
+        input.style.animationName = `fade`;
         input.onanimationend = () => {
             input.style.animationName = "";
             setTimeout(() => resolve(true), 500);

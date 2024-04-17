@@ -8,6 +8,17 @@
     animation-fill-mode: backwards;
 }
 
+#colors {
+    width: 230px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#score {
+    margin: 1em auto;
+    width: 300px;
+}
+
 #green {
     background-color: green;
 }
@@ -24,53 +35,12 @@
     background-color: yellow;
 }
 
-@keyframes green-animation {
+@keyframes fade {
     from {
-        background-color: green;
+        opacity: 1;
     }
 
     to {
-        background-color: black;
+        opacity: 0.1;
     }
-}
-
-@keyframes blue-animation {
-    from {
-        background-color: blue;
-    }
-
-    to {
-        background-color: black;
-    }
-}
-
-@keyframes red-animation {
-    from {
-        background-color: red;
-    }
-
-    to {
-        background-color: black;
-    }
-}
-
-@keyframes yellow-animation {
-    from {
-        background-color: yellow;
-    }
-
-    to {
-        background-color: black;
-    }
-}
-
-#colors {
-    width: 230px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-#data {
-    max-width: 300px;
-    margin-top: 1em;
 }
